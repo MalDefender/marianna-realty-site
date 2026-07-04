@@ -187,6 +187,34 @@
   .foot-links a:hover{ color:var(--accent); }
   .foot-bottom{ margin-top:48px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); }
 
+  /* OBJECT MODAL */
+  .modal{ position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center; padding:24px; }
+  .modal.open{ display:flex; animation:mfade .25s ease; }
+  @keyframes mfade{ from{opacity:0} to{opacity:1} }
+  .modal .backdrop{ position:absolute; inset:0; background:rgba(18,26,22,.55); backdrop-filter:blur(4px); }
+  .modal .mcard{ position:relative; z-index:2; width:min(660px,100%); max-height:90vh; overflow:auto; background:var(--panel);
+    border:1px solid var(--line); border-radius:20px; box-shadow:0 40px 90px -30px rgba(20,30,25,.6);
+    animation:mrise .35s cubic-bezier(.16,1,.3,1); }
+  @keyframes mrise{ from{transform:translateY(20px)} to{transform:none} }
+  .modal .hero-img{ position:relative; aspect-ratio:16/10; }
+  .modal .hero-img .art{ position:absolute; inset:0; }
+  .modal .hero-img .mtag{ position:absolute; top:16px; left:16px; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    font-weight:600; padding:6px 12px; border-radius:100px; background:rgba(251,250,246,.94); color:var(--accent); }
+  .modal .hero-img .pnote{ position:absolute; bottom:14px; left:16px; font-size:12px; color:#fff;
+    background:rgba(6,10,8,.5); padding:6px 12px; border-radius:100px; backdrop-filter:blur(4px); }
+  .modal .close{ position:absolute; top:14px; right:14px; z-index:3; width:38px; height:38px; border-radius:50%;
+    border:1px solid var(--line); background:rgba(251,250,246,.94); cursor:pointer; display:grid; place-items:center; font-size:16px; color:var(--ink); }
+  .modal .close:hover{ background:#fff; }
+  .modal .mbody{ padding:26px 28px 28px; }
+  .modal .mprice{ font-family:"Fraunces",serif; font-size:30px; font-weight:600; letter-spacing:-.01em; }
+  .modal .mtitle{ font-size:20px; font-weight:600; margin-top:6px; }
+  .modal .maddr{ font-size:14px; color:var(--muted); margin-top:6px; }
+  .modal .mspecs{ display:flex; gap:24px; flex-wrap:wrap; margin-top:18px; padding:16px 0;
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .modal .mspecs .s{ font-size:14px; color:var(--soft); } .modal .mspecs .s b{ color:var(--ink); font-weight:600; }
+  .modal .mdesc{ font-size:14px; color:var(--soft); line-height:1.65; margin-top:18px; }
+  .modal .macts{ display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; }
+
   .mock-tag{ position:fixed; z-index:60; bottom:16px; left:16px; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
     color:var(--muted); background:rgba(251,250,246,.9); border:1px solid var(--line); padding:8px 14px; border-radius:100px; backdrop-filter:blur(8px); }
 </style>
@@ -202,7 +230,7 @@
     <div class="nav-links">
       <a href="#catalog">Объекты</a>
       <a href="#about">Обо мне</a>
-      <a href="#order" class="btn">Оставить заявку</a>
+      <a href="#order" class="btn">Связаться</a>
     </div>
   </div>
 </nav>
@@ -215,8 +243,8 @@
       <h1 class="hero reveal" style="margin-top:20px;">Недвижимость<br>у моря <em>без потерь</em>.</h1>
       <p class="hero-sub reveal">Подбираю и продаю квартиры, апартаменты и дома в Геленджике и на побережье — от 20 млн до премиум-класса. Сопровождаю сделку от подбора до ключей: проверяю юридическую чистоту, торгуюсь за вашу цену и беру рутину на себя.</p>
       <div class="hero-cta reveal">
-        <a href="#catalog" class="btn">Смотреть объекты <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <a href="#order" class="btn ghost">Бесплатная консультация</a>
+        <a href="#catalog" class="btn">Открыть каталог <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#order" class="btn ghost">Связаться</a>
       </div>
       <div class="trust reveal">
         <div><div class="k">11</div><div class="v">объектов в продаже</div></div>
@@ -254,7 +282,7 @@
   <div class="wrap">
     <div class="sec-top reveal">
       <h2>Объекты<br>в продаже</h2>
-      <p>Каждый объект проверен лично. Фото, планировка, район и статус — всё в одном месте, а не в ленте.</p>
+      <p>Листайте объекты и открывайте любой — цена, площадь, этаж и детали внутри. Каталог вы пополняете сами в пару кликов.</p>
     </div>
 
     <div class="filter reveal" id="filter">
@@ -265,7 +293,7 @@
     </div>
 
     <div class="catalog">
-      <a class="obj o1 reveal" href="#order" onclick="pick('3-комн., 250 м², Геленджик','280 000 000 ₽')">
+      <a class="obj o1 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Квартира</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -278,7 +306,7 @@
         </div>
       </a>
 
-      <a class="obj o2 reveal" href="#order" onclick="pick('Дом 316 м² с участком, Геленджик','250 000 000 ₽')">
+      <a class="obj o2 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Дом</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -291,7 +319,7 @@
         </div>
       </a>
 
-      <a class="obj o3 reveal" href="#order" onclick="pick('Дом 288 м², Дивноморское','155 000 000 ₽')">
+      <a class="obj o3 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Дом</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -304,7 +332,7 @@
         </div>
       </a>
 
-      <a class="obj o4 reveal" href="#order" onclick="pick('Апартаменты 98 м², Геленджик','90 000 000 ₽')">
+      <a class="obj o4 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Апартаменты</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -317,7 +345,7 @@
         </div>
       </a>
 
-      <a class="obj o5 reveal" href="#order" onclick="pick('2-комн., 110 м², Геленджик','68 000 000 ₽')">
+      <a class="obj o5 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Квартира</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -330,7 +358,7 @@
         </div>
       </a>
 
-      <a class="obj o6 reveal" href="#order" onclick="pick('Апартаменты 92 м², Геленджик','57 000 000 ₽')">
+      <a class="obj o6 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Апартаменты</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -343,7 +371,7 @@
         </div>
       </a>
 
-      <a class="obj o1 reveal" href="#order" onclick="pick('2-комн., 106 м², Геленджик','46 350 000 ₽')">
+      <a class="obj o1 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Квартира</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -356,7 +384,7 @@
         </div>
       </a>
 
-      <a class="obj o2 reveal" href="#order" onclick="pick('2-комн., 72 м², Геленджик','26 700 000 ₽')">
+      <a class="obj o2 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Квартира</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -369,7 +397,7 @@
         </div>
       </a>
 
-      <a class="obj o3 reveal" href="#order" onclick="pick('1-комн., 56,9 м², Геленджик','24 500 000 ₽')">
+      <a class="obj o3 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Квартира</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -382,7 +410,7 @@
         </div>
       </a>
 
-      <a class="obj o4 reveal" href="#order" onclick="pick('Апартаменты 50,9 м², Геленджик','22 000 000 ₽')">
+      <a class="obj o4 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Апартаменты</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -395,7 +423,7 @@
         </div>
       </a>
 
-      <a class="obj o5 reveal" href="#order" onclick="pick('Апартаменты 60,7 м², Геленджик','20 500 000 ₽')">
+      <a class="obj o5 reveal" onclick="openObject(this)" style="cursor:pointer;">
         <div class="img"><div class="art"></div>
           <span class="tag">Апартаменты</span>
           <div class="fav"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 8 3 4.5 6.5 4.5c2 0 3.5 1.5 5.5 3.5 2-2 3.5-3.5 5.5-3.5 3.5 0 6 3.5 4 8-2.5 4.15-9.5 8.5-9.5 8.5z" stroke="#2F5D4C" stroke-width="1.6"/></svg></div>
@@ -437,13 +465,13 @@
   <div class="wrap">
     <div class="order reveal">
       <div class="left">
-        <div class="eyeline">Заявка в один клик</div>
-        <h2 style="margin-top:16px;">Расскажите задачу —<br>отвечу в течение дня.</h2>
-        <p>Купить, продать или просто понять цену вашего объекта — оставьте контакт, и я свяжусь с бесплатной консультацией. Без обязательств.</p>
+        <div class="eyeline">Связаться</div>
+        <h2 style="margin-top:16px;">Понравился объект<br>из каталога?</h2>
+        <p>Напишите — расскажу детали, пришлю фото и организую просмотр. Или подберу вариант под ваш запрос, если в каталоге пока нет нужного.</p>
         <div class="steps">
-          <div class="s"><b>01</b><span>Вы оставляете короткую заявку</span></div>
-          <div class="s"><b>02</b><span>Я связываюсь и уточняю детали</span></div>
-          <div class="s"><b>03</b><span>Составляем план и берёмся за дело</span></div>
+          <div class="s"><b>01</b><span>Пишете по конкретному объекту или запросу</span></div>
+          <div class="s"><b>02</b><span>Присылаю фото, детали и отвечаю на вопросы</span></div>
+          <div class="s"><b>03</b><span>Договариваемся о просмотре</span></div>
         </div>
       </div>
       <div class="form">
@@ -469,8 +497,8 @@
             <label>Телефон или Telegram</label>
             <input type="text" placeholder="+7 ··· или @ник" required>
           </div>
-          <button class="btn submit" type="submit">Получить консультацию <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="form-note">Отвечаю в течение 24 часов · консультация бесплатна</div>
+          <button class="btn submit" type="submit">Написать <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="form-note">Отвечаю в течение дня</div>
         </form>
       </div>
     </div>
@@ -483,7 +511,7 @@
     <div class="foot-inner">
       <div class="big reveal">Думаете о сделке?<br>Давайте обсудим.</div>
       <div class="foot-links reveal">
-        <a href="#order">→ Оставить заявку</a>
+        <a href="#order">→ Связаться</a>
         <a href="https://www.instagram.com/marianna_realty/" target="_blank">→ Instagram</a>
         <a href="#catalog">→ Объекты в продаже</a>
         <a href="#about">→ Обо мне</a>
@@ -495,6 +523,30 @@
     </div>
   </div>
 </footer>
+
+<!-- OBJECT MODAL -->
+<div class="modal" id="objModal" onclick="if(event.target.id==='objModal'||event.target.classList.contains('backdrop'))closeObject()">
+  <div class="backdrop"></div>
+  <div class="mcard">
+    <button class="close" onclick="closeObject()" aria-label="Закрыть">✕</button>
+    <div class="hero-img">
+      <div class="art" id="mArt"></div>
+      <span class="mtag" id="mTag">Объект</span>
+      <span class="pnote">Фото добавятся в каталог</span>
+    </div>
+    <div class="mbody">
+      <div class="mprice" id="mPrice">—</div>
+      <div class="mtitle" id="mTitle">—</div>
+      <div class="maddr" id="mAddr">—</div>
+      <div class="mspecs" id="mSpecs"></div>
+      <div class="mdesc" id="mDesc"></div>
+      <div class="macts">
+        <a class="btn" href="https://www.instagram.com/marianna_realty/" target="_blank">Узнать об объекте</a>
+        <button class="btn ghost" onclick="closeObject()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   const nav = document.getElementById('nav');
@@ -514,12 +566,28 @@
     e.target.classList.add('on');
   });
 
-  // clicking an object prefills the request form with that object
-  function pick(name, price){
-    document.getElementById('objPill').style.display='flex';
-    document.getElementById('objName').textContent = name;
-    document.getElementById('objPrice').textContent = price;
+  // clicking an object opens its detail card (not a lead form)
+  function openObject(el){
+    const srcArt = el.querySelector('.art');
+    const cs = getComputedStyle(srcArt);
+    const mArt = document.getElementById('mArt');
+    mArt.style.backgroundImage = cs.backgroundImage;
+    mArt.style.backgroundColor = cs.backgroundColor;
+    document.getElementById('mTag').textContent   = el.querySelector('.tag').textContent.trim();
+    document.getElementById('mPrice').textContent = el.querySelector('.price').textContent.trim();
+    document.getElementById('mTitle').textContent = el.querySelector('h3').textContent.trim();
+    document.getElementById('mAddr').textContent  = el.querySelector('.addr').textContent.trim();
+    document.getElementById('mSpecs').innerHTML   = el.querySelector('.specs').innerHTML;
+    document.getElementById('mDesc').textContent  =
+      'Подробное описание и фотографии объекта добавляются в каталог. Нажмите «Узнать об объекте» — пришлю фото, детали и организую просмотр.';
+    document.getElementById('objModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
+  function closeObject(){
+    document.getElementById('objModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeObject(); });
 
   function sendForm(ev){
     ev.preventDefault();
